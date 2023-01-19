@@ -32,6 +32,7 @@ export class FirstContactCreateScheduleAction {
         createdBy: user.id,
       })
       .populate(['firstTask', 'reminderTask']);
+
     if (!firstContact || !firstContact.isEnable) {
       return;
     }
@@ -44,7 +45,7 @@ export class FirstContactCreateScheduleAction {
     await this.sendTask(context, from, to, firstTask);
 
     this.backgroudJobService.job(
-      now(1800000), // 1800000
+      now(1800000), // 30 minutes
       undefined,
       this.handleReminderTask(context, user, from, to),
     );
@@ -62,7 +63,8 @@ export class FirstContactCreateScheduleAction {
           createdBy: user.id,
         })
         .populate(['firstTask', 'reminderTask']);
-      if (!firstContact || !firstContact.isEnable) {
+      if (!firstContact || !firstContact.isEnable || !firstContact.reminderTask) {
+        this.logger.log(`Skip reminder task for ${to}`);
         return;
       }
       const subscribers = await this.formSubmissionFindByPhoneNumberAction.execute(

@@ -34,6 +34,7 @@ import { PlanSubscriptionModule } from '../plan-subscription/plan-subscription.m
     AuthBlackListTokenAction,
     AuthSigninProviderAction,
     AuthSigninByGoogleAction,
+    
   ],
   controllers: [AuthController],
 })
